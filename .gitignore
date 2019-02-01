@@ -1,0 +1,15 @@
+# Ignore everything
+*
+/*
+/work
+/.local
+
+# But not these files...
+!*.vimrc
+!*.vim/**
+!*.bashrc
+!*.bash_aliases
+!*.proxy/**
+!*/
+!Apps/**
+!.gitignore
