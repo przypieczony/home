@@ -1,0 +1,7 @@
+http_proxy=http://10.158.100.1:8080/
+https_proxy=http://10.158.100.1:8080/
+ftp_proxy=http://10.158.100.1:8080/
+HTTP_PROXY=http://10.158.100.1:8080/
+HTTPS_PROXY=http://10.158.100.1:8080/
+FTP_PROXY=http://10.158.100.1:8080/
+no_proxy=localhost,127.0.0.1,instance-data,169.254.169.254,.nsn-net.net,.nsn-rdnet.net,.ext.net.nokia.com,.int.net.nokia.com,.inside.nsn.com,.inside.nokiasiemensnetworks.com
