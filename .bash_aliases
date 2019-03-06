@@ -48,4 +48,4 @@ alias eucatools='source ~/work/venv/eucatools/bin/activate'
 alias cdmy='cd ~/work/'
 alias g='find -L . -xtype f ! -wholename *.svn* -print0 | xargs -0 -n8 -P24 grep -I --color=auto'
 alias malina='ssh pi@192.168.1.111'
-
+alias hist='cat ~/.histlog'

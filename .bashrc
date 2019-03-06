@@ -126,6 +126,9 @@ f() { ff "$@"; cd "$(< ~/.fff_d)"; }
 
 export svne="http://svne1.access.nsn.com"
 export AWS_DEFAULT_REGION="es-si-eu-ohn-31"
-export HISTTIMEFORMAT="%d/%m/%y %T "
 export PATH=/home/kszymans/Apps/:$PATH
 alias hgit='git --git-dir ~/.detached_git_home/.git --work-tree=$HOME'
+
+source ~/Apps/hcmnt
+export hcmntextra='date "+%d/%m/%Y %R"'
+export PROMPT_COMMAND='hcmnt -e -l ~/.histlog'
