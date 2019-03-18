@@ -37,6 +37,12 @@ ssho() {
     ssh -t admin@esbmon01.emea.nsn-net.net -i ~/.ssh/id_rsa "./tmp/kszymans/log_me.sh ${instance_name}"
 }
 
+create_review() {
+    task=$1
+    venv cb-python
+    python3 ~/work/repos/jira_interface/create-review.py $task
+}
+
 alias proxy='source ~/.proxy/nokia_proxy'
 alias esrdsbtsciv50='ssh -i ~/.ssh/esrdsbtsciv50_rsa root@esrdsbtsciv50.emea.nsn-net.net'
 alias esrdsbtsciv52='ssh -i ~/.ssh/esrdsbtsciv50_rsa root@esrdsbtsciv52.emea.nsn-net.net'
