@@ -1,4 +1,6 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =2
+let g:netrw_dirhist_cnt =4
 let g:netrw_dirhist_1='/mnt/cifs/ROTTA/BB/Wroclaw/belter/PR347758'
 let g:netrw_dirhist_2='/home/kszymans/work/temp/planeta/C_Application'
+let g:netrw_dirhist_3='/home/kszymans/work/repos/dsl/common'
+let g:netrw_dirhist_4='/home/kszymans/work/repos/dsl/common/settings'

@@ -54,4 +54,5 @@ alias eucatools='source ~/work/venv/eucatools/bin/activate'
 alias cdmy='cd ~/work/'
 alias g='find -L . -xtype f ! -wholename *.svn* -print0 | xargs -0 -n8 -P24 grep -I --color=auto'
 alias malina='ssh pi@192.168.1.111'
-alias hist='cat ~/.histlog'
+alias hist="cat ~/.histlog | sed -r 's|^(.*### )([0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2} )|\2\1|'"
+alias histy="cat ~/.histlog | sed -r 's|^(.*### )([0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2} )|\2\1|' | grep $(date -d "yesterday 13:00" '+%d/%m/%Y')"

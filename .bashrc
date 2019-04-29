@@ -132,3 +132,8 @@ alias hgit='git --git-dir ~/.detached_git_home/.git --work-tree=$HOME'
 source ~/Apps/hcmnt
 export hcmntextra='date "+%d/%m/%Y %R"'
 export PROMPT_COMMAND='hcmnt -e -l ~/.histlog'
+
+if [ -f ~/.bash_kubectl_completion ]; then
+    . ~/.bash_kubectl_completion
+fi
+
