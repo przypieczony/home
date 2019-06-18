@@ -129,11 +129,13 @@ export AWS_DEFAULT_REGION="es-si-eu-ohn-31"
 export PATH=/home/kszymans/Apps/:$PATH
 alias hgit='git --git-dir ~/.detached_git_home/.git --work-tree=$HOME'
 
-source ~/Apps/hcmnt
-export hcmntextra='date "+%d/%m/%Y %R"'
-export PROMPT_COMMAND='hcmnt -e -l ~/.histlog'
+HISTTIMEFORMAT="%d/%m/%Y %R "
+#source ~/Apps/hcmnt
+#export hcmntextra='date "+%d/%m/%Y %R"'
+#export PROMPT_COMMAND='hcmnt -e -l ~/.histlog'
 
 if [ -f ~/.bash_kubectl_completion ]; then
     . ~/.bash_kubectl_completion
 fi
 
+. /etc/profile.d/vte.sh
