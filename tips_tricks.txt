@@ -1,0 +1,25 @@
+## Kubernetes
+# Get API request inside the cluster
+KUBE_TOKEN=$(</var/run/secrets/kubernetes.io/serviceaccount/token)
+curl -sSk -H "Authorization: Bearer $KUBE_TOKEN" https://kubernetes.default.svc:443/apis/custom.metrics.k8s.io/v1beta1
+
+## Linux
+# Display each sub-directory size
+du -hs * | sort -hr
+
+## Openstack
+# Create instance and attach floating IP
+openstack server create --image k3-SoamOS-7.2-2019-05-10-9291d61 --flavor ea.002-0006 --key-name lteoam --security-group default --os-cloud ca-soam-42 --nic net-id=21d86afb-8681-4478-af1c-5eb5198ddf55 kszymans
+openstack floating ip create bc242305-0e69-4c3c-92f4-de532bcba307 --os-cloud ca-soam-42
+openstack server add floating ip kszymans 10.181.198.192 --os-cloud ltecb-71
+# List all Servers under Stack
+openstack stack resource list -n 3 <stack_name> -c physical_resource_id -f value -c resource_type --os-cloud <cloud_name> | grep OS::Nova::Server
+# Mark resource unhealthy under nested stack
+openstack stack resource mark unhealthy <nested_stack_name> <physical_resource_id> --os-cloud distcc-86
+# Update stack with tox
+source <cloud_creds_file>
+<set proxy>
+tox -e stack_update
+
+## Git
+git log --since="last month" --pretty=format:'%h,%an,%ar,%s' --author kszymans

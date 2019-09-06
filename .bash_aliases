@@ -39,6 +39,10 @@ create_review() {
     python3 ~/work/repos/jira_interface/create-review.py $task
 }
 
+adminssh() {
+    ssh -tt admin@esbmon01.emea.nsn-net.net -i ~/.ssh/id_rsa $@
+
+}
 stack_search() {
     string=$1
     export string
@@ -50,8 +54,23 @@ stack_search() {
 EOF
 }
 
+ change-ns() {
+    namespace=$1
+    if [ -z $namespace ]; then
+        echo "Please provide the namespace name: 'change-ns mywebapp'"
+        return 1
+    fi
+
+    kubectl config set-context $(kubectl config current-context) --namespace $namespace
+}
+
+function current-ns() {
+	kubectl get sa default -o jsonpath='{.metadata.namespace}'
+	echo
+}
+
 alias proxy='source ~/.proxy/nokia_proxy'
-alias admin='ssh admin@esbmon01.emea.nsn-net.net -i ~/.ssh/id_rsa'
+alias admin=adminssh
 alias cdmy='cd ~/work/'
 alias g='find -L . -xtype f ! -wholename *.svn* -print0 | xargs -0 -n8 -P24 grep -I --color=auto'
 alias malina='ssh pi@192.168.1.111'
