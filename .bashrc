@@ -16,8 +16,8 @@ HISTCONTROL=ignoreboth
 shopt -s histappend
 
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=100000
-HISTFILESIZE=200000
+HISTSIZE=-1
+HISTFILESIZE=-1
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -95,14 +95,13 @@ fi
 
 # custom part
 
+
 if [ -e /etc/profile.d/vte.sh ]; then
     . /etc/profile.d/vte.sh
 fi
 
 f() { ff "$@"; cd "$(< ~/.fff_d)"; }
 
-export svne="http://svne1.access.nsn.com"
-export AWS_DEFAULT_REGION="es-si-eu-ohn-31"
 export PATH=/home/kszymans/Apps/:$PATH
 alias hgit='git --git-dir ~/.detached_git_home/.git --work-tree=$HOME'
 
@@ -110,6 +109,10 @@ HISTTIMEFORMAT="%d/%m/%Y %R "
 
 if [ -f ~/.bash_kubectl_completion ]; then
     . ~/.bash_kubectl_completion
+fi
+complete -F __start_kubectl k
+if [ -f ~/.bash_helm_completion ]; then
+    . ~/.bash_helm_completion
 fi
 
 # get current branch in git repo
@@ -158,6 +161,18 @@ function parse_git_dirty {
 		echo ""
 	fi
 }
+KUBE_PS1_PREFIX=[
+KUBE_PS1_SUFFIX=]
+KUBE_PS1_NS_COLOR=blue
+KUBE_PS1_SYMBOL_ENABLE=false
+source /home/kszymans/Apps/kube-ps1/kube-ps1.sh
 
-export PS1="\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\`parse_git_branch\`\\$ "
-. /etc/profile.d/vte.sh
+export PROMPT_DIRTRIM=3
+export PS1='\[\033[01;34m\][\h]\[\033[00m\]$(kube_ps1)$(parse_git_branch) \w $ '
+
+#kubectx and kubens
+export PATH=~/.kubectx:$PATH
+export FZF_DEFAULT_OPTS='--height 20% --border'
+
+#kube plugins path
+export PATH="${PATH}:${HOME}/.krew/bin"

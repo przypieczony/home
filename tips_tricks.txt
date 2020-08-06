@@ -2,6 +2,9 @@
 # Get API request inside the cluster
 KUBE_TOKEN=$(</var/run/secrets/kubernetes.io/serviceaccount/token)
 curl -sSk -H "Authorization: Bearer $KUBE_TOKEN" https://kubernetes.default.svc:443/apis/custom.metrics.k8s.io/v1beta1
+# Create self-signed ssl certificates for ingress
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout tls-custom.key -out tls-custom.crt -subj "/CN=webapp.scm.nsn-rdnet.net/O=webapp.scm.nsn-rdnet.net
+kubectl create secret tls webapp-tls-custom --key tls-custom.key --cert tls-custom.crt
 
 ## Linux
 # Display each sub-directory size
@@ -9,9 +12,10 @@ du -hs * | sort -hr
 
 ## Openstack
 # Create instance and attach floating IP
-openstack server create --image k3-SoamOS-7.2-2019-05-10-9291d61 --flavor ea.002-0006 --key-name lteoam --security-group default --os-cloud ca-soam-42 --nic net-id=21d86afb-8681-4478-af1c-5eb5198ddf55 kszymans
-openstack floating ip create bc242305-0e69-4c3c-92f4-de532bcba307 --os-cloud ca-soam-42
-openstack server add floating ip kszymans 10.181.198.192 --os-cloud ltecb-71
+openstack network list -c ID --os-cloud ca-soam-42
+openstack server create --image k3-SoamOS-7.2-2019-05-10-9291d61 --flavor ea.002-0006 --key-name lteoam --security-group default --os-cloud ca-soam-42 --network ro-dynamic-dispatchers kszymans-server
+openstack floating ip create datacentre --os-cloud ca-soam-42
+openstack server add floating ip kszymans-server 10.181.198.192 --os-cloud ltecb-71
 # List all Servers under Stack
 openstack stack resource list -n 3 <stack_name> -c physical_resource_id -f value -c resource_type --os-cloud <cloud_name> | grep OS::Nova::Server
 # Mark resource unhealthy under nested stack
@@ -20,6 +24,35 @@ openstack stack resource mark unhealthy <nested_stack_name> <physical_resource_i
 source <cloud_creds_file>
 <set proxy>
 tox -e stack_update
+# List events of stack
+openstack stack event list gitlab-runners --os-cloud=ltecb-78
+# Reboot distcc instances per stack/HAProxy
+for ip in `cat IPS`; do openstack server reboot $(openstack server list -f value -c ID --ip $ip --name host-distccMulti-0-* --os-cloud distcc-100) --os-cloud distcc-100; done
+for ip in `cat IPS`; do openstack server list -f value -c Status -c ID --ip $ip --name host-distccMulti-0-*  --os-cloud distcc-100; done
+for id in `cat IDS`; do salt "$id*" test.ping; done
+for id in `cat IDS`; do salt "$id*" cmd.run "systemctl start distccfuse"; done
 
 ## Git
 git log --since="last month" --pretty=format:'%h,%an,%ar,%s' --author kszymans
+# Branch creation in gerrit
+git checkout master
+git push origin HEAD:users/kszymans/k3
+git checkout users/kszymans/k3
+git push --set-upstream origin HEAD:users/kszymans/k3
+
+## EFK
+# Match all documents from ES
+curl -X GET --cacert tls.crt -u elastic:$PW "https://$NAME-es-http:9200/_search?pretty" -H 'Content-Type: application/json' -d' {"query": {"match_all": {}}}'
+# delete all documents from ES
+curl -X DELETE --cacert tls.crt -u elastic:$PW "https://$NAME-es-http:9200/*" -H 'Content-Type: application/json'
+
+
+## AWS
+# Create instance
+aws ec2 import-key-pair --key-name "test-key" --public-key-material file://~/.ssh/debug-aws-key.pub --region eu-central-1
+aws ec2 describe-vpcs --region eu-central-1
+aws ec2 describe-subnets --filters Name=vpc-id,Values=vpc-6602c90c --region eu-central-1
+aws ec2 run-instances --image-id ami-0a02ee601d742e89f --count 1 --instance-type t2.micro --key-name test-key --subnet-id subnet-e39468af --region eu-central-1
+aws ec2 describe-instances --region eu-central-1
+# Delete instance
+aws ec2 terminate-instances --instance-ids i-0494946c91bc9b6ac
